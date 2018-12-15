@@ -1,0 +1,27 @@
+cache:
+  key: ${CI_COMMIT_REF_SLUG}
+
+variables:
+  DOCKER_DRIVER: overlay2
+
+stages:
+  - base
+  - build
+  - dist
+
+.softether:
+  image: docker:stable
+  services:
+    - docker:dind
+  variables:
+    HUB_REGISTRY_IMAGE: "xxy1991/softether"
+    ALY_REGISTRY_IMAGE: "$ALY_REGISTRY/xxy1991/softether"
+  after_script:
+    - docker push $REGISTRY_IMAGE
+
+include:
+  - '/base/.gitlab-ci.yml'
+  - '/devel/.gitlab-ci.yml'
+  - '/build/.gitlab-ci.yml'
+  - '/stable/.gitlab-ci.yml'
+  - '/static/.gitlab-ci.yml'

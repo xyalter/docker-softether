@@ -1,0 +1,34 @@
+.build:
+  extends: .softether
+  stage: build
+  variables:
+    DIR: build
+    REGISTRY_IMAGE: "$HUB_REGISTRY_IMAGE:build-${REPO}-${VERSION}"
+  before_script:
+    - docker login -u "$HUB_REGISTRY_USER" -p "$HUB_REGISTRY_PASSWORD"
+    - docker pull $REGISTRY_IMAGE || true
+    - docker pull $BASE_IMAGE || true
+    - cd $DIR
+  script:
+    - docker build --cache-from $REGISTRY_IMAGE,$BASE_IMAGE
+      -t $REGISTRY_IMAGE . -f ${REPO}-${VERSION}.Dockerfile
+  only:
+    changes:
+      - build/*
+
+.build:stable:
+  extends: .build
+  variables:
+    REPO: stable
+
+build:stable-beta:
+  extends: .build:stable
+  variables:
+    VERSION: beta
+    BASE_IMAGE: "xxy1991/softether:build-debian"
+
+build:stable-rtm:
+  extends: .build:stable
+  variables:
+    VERSION: rtm
+    BASE_IMAGE: "xxy1991/softether:build-debian-slim"

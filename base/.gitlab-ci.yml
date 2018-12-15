@@ -1,0 +1,55 @@
+.base:
+  extends: .softether
+  stage: base
+  variables:
+    DIR: base
+    REGISTRY_IMAGE: "$HUB_REGISTRY_IMAGE:${FEATURES}-${VERSION}"
+  before_script:
+    - docker login -u "$HUB_REGISTRY_USER" -p "$HUB_REGISTRY_PASSWORD"
+    - docker pull $REGISTRY_IMAGE || true
+    - docker pull $BASE_IMAGE || true
+    - cd $DIR
+  script:
+    - docker build --cache-from $REGISTRY_IMAGE,$BASE_IMAGE
+      -t $REGISTRY_IMAGE . -f ${FEATURES}-${VERSION}.Dockerfile
+  only:
+    changes:
+      - base/*
+
+.base:build:
+  extends: .base
+  variables:
+    FEATURES: build
+
+base:build-debian:
+  extends: .base:build
+  variables:
+    VERSION: debian
+    BASE_IMAGE: "xxy1991/debian:build"
+
+base:build-debian-slim:
+  extends: .base:build
+  variables:
+    VERSION: debian-slim
+    BASE_IMAGE: "debian:stretch"
+
+base:build-centos:
+  extends: .base:build
+  variables:
+    VERSION: centos
+    BASE_IMAGE: "xxy1991/centos:build"
+
+.base:run:
+  extends: .base
+  variables:
+    FEATURES: run
+
+base:run-debian:
+  extends: .base:run
+  variables:
+    VERSION: debian
+
+base:run-centos:
+  extends: .base:run
+  variables:
+    VERSION: centos

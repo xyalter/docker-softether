@@ -1,0 +1,58 @@
+.dist:
+  extends: .softether
+  stage: dist
+  variables:
+    REGISTRY_IMAGE: "$HUB_REGISTRY_IMAGE:${REPO}-${VERSION}-${FEATURES}"
+
+.dist:stable:
+  extends: .dist
+  variables:
+    REPO: stable
+    REGISTRY_IMAGE: "$HUB_REGISTRY_IMAGE:${REPO}-${VERSION}"
+  before_script:
+    - docker login -u "$HUB_REGISTRY_USER" -p "$HUB_REGISTRY_PASSWORD"
+    - docker pull $REGISTRY_IMAGE || true
+    - docker pull $BASE_IMAGE || true
+    - cd $REPO
+  script:
+    - docker build --cache-from $REGISTRY_IMAGE,$BASE_IMAGE
+      -t $REGISTRY_IMAGE . -f ${FILE_NAME}.Dockerfile
+  only:
+    changes:
+      - stable/*
+
+dist:stable-beta:
+  extends: .dist:stable
+  variables:
+    VERSION: beta
+    FILE_NAME: $VERSION
+    BASE_IMAGE: "xxy1991/softether:build-${REPO}-${VERSION}"
+
+.dist:stable-beta-features:
+  extends: .dist:stable
+  variables:
+    VERSION: beta
+    REGISTRY_IMAGE: "$HUB_REGISTRY_IMAGE:${REPO}-${VERSION}-${FEATURES}"
+    FILE_NAME: ${VERSION}-${FEATURES}
+    
+dist:stable-beta-server:
+  extends: .dist:stable-beta-features
+  variables:
+    FEATURES: server
+
+dist:stable-beta-bridge:
+  extends: .dist:stable-beta-features
+  variables:
+    FEATURES: bridge
+
+dist:stable-beta-client:
+  extends: .dist:stable-beta-features
+  variables:
+    FEATURES: client
+
+dist:stable-rtm:
+  extends: .dist:stable
+  variables:
+    VERSION: rtm
+    FILE_NAME: $VERSION
+    BASE_IMAGE: "xxy1991/softether:build-${REPO}-${VERSION}"

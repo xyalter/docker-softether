@@ -1,0 +1,58 @@
+.build:static:
+  extends: .softether
+  stage: build
+  variables:
+    REPO: static
+    REGISTRY_IMAGE: "$HUB_REGISTRY_IMAGE:${VERSION}-${FEATURE}"
+  before_script:
+    - docker login -u "$HUB_REGISTRY_USER" -p "$HUB_REGISTRY_PASSWORD"
+    - docker pull $REGISTRY_IMAGE || true
+    # - docker pull $BASE_IMAGE || true
+    - cd $REPO
+  script:
+    - docker build --cache-from $REGISTRY_IMAGE,$BASE_IMAGE
+      --build-arg FEATURE=vpn${FEATURE}
+      -t $REGISTRY_IMAGE . -f ${VERSION}.Dockerfile
+  only:
+    changes:
+      - static/*
+
+.build:static-beta:
+  extends: .build:static
+  variables:
+    VERSION: beta
+
+build:static-beta-server:
+  extends: .build:static-beta
+  variables:
+    FEATURE: server
+
+build:static-beta-bridge:
+  extends: .build:static-beta
+  variables:
+    FEATURE: bridge
+
+build:static-beta-client:
+  extends: .build:static-beta
+  variables:
+    FEATURE: client
+    
+.build:static-rtm:
+  extends: .build:static
+  variables:
+    VERSION: rtm
+
+.build:static-rtm-server:
+  extends: .build:static-rtm
+  variables:
+    FEATURE: server
+
+.build:static-rtm-bridge:
+  extends: .build:static-rtm
+  variables:
+    FEATURE: bridge
+
+.build:static-rtm-client:
+  extends: .build:static-rtm
+  variables:
+    FEATURE: client
