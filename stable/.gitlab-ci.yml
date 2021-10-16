@@ -2,7 +2,7 @@
   extends: .softether
   stage: dist
   variables:
-    REGISTRY_IMAGE: "$HUB_REGISTRY_IMAGE:${REPO}-${VERSION}-${FEATURES}"
+    REGISTRY_IMAGE: "$HUB_REGISTRY_IMAGE:${REPO}-${VERSION}-${FEATURE}"
 
 .dist:stable:
   extends: .dist
@@ -28,27 +28,27 @@ dist:stable-beta:
     FILE_NAME: $VERSION
     BASE_IMAGE: "xxy1991/softether:build-${REPO}-${VERSION}"
 
-.dist:stable-beta-features:
+.dist:stable-beta-feature:
   extends: .dist:stable
   variables:
     VERSION: beta
-    REGISTRY_IMAGE: "$HUB_REGISTRY_IMAGE:${REPO}-${VERSION}-${FEATURES}"
-    FILE_NAME: ${VERSION}-${FEATURES}
+    REGISTRY_IMAGE: "$HUB_REGISTRY_IMAGE:${REPO}-${VERSION}-${FEATURE}"
+    FILE_NAME: ${VERSION}-${FEATURE}
     
 dist:stable-beta-server:
-  extends: .dist:stable-beta-features
+  extends: .dist:stable-beta-feature
   variables:
-    FEATURES: server
+    FEATURE: server
 
 dist:stable-beta-bridge:
-  extends: .dist:stable-beta-features
+  extends: .dist:stable-beta-feature
   variables:
-    FEATURES: bridge
+    FEATURE: bridge
 
 dist:stable-beta-client:
-  extends: .dist:stable-beta-features
+  extends: .dist:stable-beta-feature
   variables:
-    FEATURES: client
+    FEATURE: client
 
 dist:stable-rtm:
   extends: .dist:stable

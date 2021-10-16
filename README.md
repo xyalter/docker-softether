@@ -1,4 +1,8 @@
 # docker-softether
+---
+
+[![Build Status](https://gitlab.com/xiaxy/docker-softether/badges/master/build.svg)](https://gitlab.com/xiaxy/docker-softether/pipelines)
+
 softether dockerized
 
 ## Binary Edition (4.X Version)

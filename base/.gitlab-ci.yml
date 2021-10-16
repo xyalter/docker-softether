@@ -3,7 +3,7 @@
   stage: base
   variables:
     DIR: base
-    REGISTRY_IMAGE: "$HUB_REGISTRY_IMAGE:${FEATURES}-${VERSION}"
+    REGISTRY_IMAGE: "$HUB_REGISTRY_IMAGE:${FEATURE}-${VERSION}"
   before_script:
     - docker login -u "$HUB_REGISTRY_USER" -p "$HUB_REGISTRY_PASSWORD"
     - docker pull $REGISTRY_IMAGE || true
@@ -11,7 +11,7 @@
     - cd $DIR
   script:
     - docker build --cache-from $REGISTRY_IMAGE,$BASE_IMAGE
-      -t $REGISTRY_IMAGE . -f ${FEATURES}-${VERSION}.Dockerfile
+      -t $REGISTRY_IMAGE . -f ${FEATURE}-${VERSION}.Dockerfile
   only:
     changes:
       - base/*
@@ -19,7 +19,7 @@
 .base:build:
   extends: .base
   variables:
-    FEATURES: build
+    FEATURE: build
 
 base:build-debian:
   extends: .base:build
@@ -42,7 +42,7 @@ base:build-centos:
 .base:run:
   extends: .base
   variables:
-    FEATURES: run
+    FEATURE: run
 
 base:run-debian:
   extends: .base:run
