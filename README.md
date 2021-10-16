@@ -1,7 +1,6 @@
 # docker-softether
----
 
-[![Build Status](https://gitlab.com/xiaxy/docker-softether/badges/master/build.svg)](https://gitlab.com/xiaxy/docker-softether/pipelines)
+[![pipeline status](https://gitlab.com/xiaxy/docker-softether/badges/develop/pipeline.svg)](https://gitlab.com/xiaxy/docker-softether/commits/develop)
 
 softether dockerized
 
